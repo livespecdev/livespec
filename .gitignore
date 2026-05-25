@@ -1,0 +1,12 @@
+# AI agent / tool configuration (kept local)
+CLAUDE.md
+AGENTS.md
+.claude/
+.cursor/
+.aider*
+
+# Editor / OS
+.DS_Store
+.vscode/
+.idea/
+
