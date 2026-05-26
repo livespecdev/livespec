@@ -1,0 +1,9 @@
+format_version: "1.0"
+name: Todo App (Example)
+description: |
+  Reference example for LiveSpec — a small todo app with personal lists,
+  list sharing, and due-date reminders. Designed to exercise the full v1
+  format: personas, goals, pain points, principles, constraints, entities,
+  external systems, architecture decisions, conventions, features across
+  multiple areas, and typed feature-to-feature relations.
+mode: loose
