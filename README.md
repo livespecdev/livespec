@@ -85,7 +85,7 @@ That's a complete, valid LiveSpec project.
 
 ## Status
 
-**Draft `v1.0.0-draft.1`** — open for review.
+**Draft `v1.0.0-draft`** — open for review.
 
 The full specification is in [`SPEC.md`](./SPEC.md). JSON Schemas, conformance test suite, and reference tooling are under active development.
 

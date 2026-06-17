@@ -1,6 +1,6 @@
 # LiveSpec: Format Specification
 
-**Version:** `v1.0.0-draft.2`
+**Version:** `v1.0.0-draft`
 **Status:** Draft (open for comments)
 **Canonical home:** https://livespec.dev
 
