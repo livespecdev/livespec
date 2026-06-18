@@ -1,0 +1,8 @@
+{
+  "description": "Manifest rules (§4, §12): missing format_version, missing name, and an unknown mode value.",
+  "diagnostics": [
+    { "ruleId": "E011", "file": "livespec.yaml" },
+    { "ruleId": "E012", "file": "livespec.yaml" },
+    { "ruleId": "W010", "file": "livespec.yaml" }
+  ]
+}

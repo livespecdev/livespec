@@ -1,0 +1,10 @@
+{
+  "description": "Linking rules (§7.2, §9.2, §9.5): dangling concept link, dangling feature link, unknown feature relation, broken typed in-prose reference, and an ambiguous shorthand reference.",
+  "diagnostics": [
+    { "ruleId": "W501", "file": "features/linker.md" },
+    { "ruleId": "W500", "file": "features/linker.md" },
+    { "ruleId": "W500", "file": "features/linker.md" },
+    { "ruleId": "W502", "file": "features/linker.md" },
+    { "ruleId": "W503", "file": "features/linker.md" }
+  ]
+}

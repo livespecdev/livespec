@@ -1,0 +1,9 @@
+{
+  "description": "Strict-mode rules (§12.2): non-canonical section name, canonical sections out of order, spec item type that does not match its section, and a REQ with no acceptance criteria.",
+  "diagnostics": [
+    { "ruleId": "E411", "file": "features/bad.md" },
+    { "ruleId": "E413", "file": "features/bad.md" },
+    { "ruleId": "E412", "file": "features/bad.md" },
+    { "ruleId": "W303", "file": "features/bad.md" }
+  ]
+}

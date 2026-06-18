@@ -1,0 +1,9 @@
+{
+  "description": "Spec-to-code marker rules (§9.4): missing feature, missing spec item ID, whitespace inside the payload, and a listed ID carrying its own feature-slug prefix. One correct marker emits nothing.",
+  "diagnostics": [
+    { "ruleId": "W600", "file": "src/broken-feature.ts" },
+    { "ruleId": "W601", "file": "src/broken-id.ts" },
+    { "ruleId": "E601", "file": "src/whitespace.ts" },
+    { "ruleId": "E602", "file": "src/prefix.ts" }
+  ]
+}

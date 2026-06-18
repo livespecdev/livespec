@@ -1,0 +1,14 @@
+{
+  "description": "Spec item rules (§8): malformed line, duplicate ID, AC parent mismatch, too-deep nesting, orphan AC, unknown type code, multiple resolution notes, note on open item, and REQ [x] with an open AC.",
+  "diagnostics": [
+    { "ruleId": "E305", "file": "features/items.md" },
+    { "ruleId": "E303", "file": "features/items.md" },
+    { "ruleId": "E301", "file": "features/items.md" },
+    { "ruleId": "E304", "file": "features/items.md" },
+    { "ruleId": "W302", "file": "features/items.md" },
+    { "ruleId": "W300", "file": "features/items.md" },
+    { "ruleId": "E306", "file": "features/items.md" },
+    { "ruleId": "E302", "file": "features/items.md" },
+    { "ruleId": "W301", "file": "features/items.md" }
+  ]
+}

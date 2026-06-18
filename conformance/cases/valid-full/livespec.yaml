@@ -1,0 +1,4 @@
+format_version: "1.0"
+name: Full Valid Project
+description: Exercises concepts, links, in-prose refs, spec items, and a code marker.
+mode: loose

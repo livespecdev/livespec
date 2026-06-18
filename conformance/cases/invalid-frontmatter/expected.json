@@ -1,0 +1,10 @@
+{
+  "description": "Frontmatter and structural rules (§5, §6.4, §7.4, §10): empty block, unclosed block, forbidden status field, missing title, missing summary paragraph.",
+  "diagnostics": [
+    { "ruleId": "E104", "file": "features/empty-block.md" },
+    { "ruleId": "E101", "file": "features/unclosed.md" },
+    { "ruleId": "E106", "file": "features/with-status.md" },
+    { "ruleId": "E103", "file": "product/persona/no-title.md" },
+    { "ruleId": "E105", "file": "product/persona/no-summary.md" }
+  ]
+}

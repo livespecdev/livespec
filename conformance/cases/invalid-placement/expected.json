@@ -1,0 +1,8 @@
+{
+  "description": "Placement and slug rules (§6.1, §9.1): invalid slug, core type under the wrong top-level directory, and a concept nested too deep.",
+  "diagnostics": [
+    { "ruleId": "E001", "file": "product/persona/Bad_Slug.md" },
+    { "ruleId": "E003", "file": "ux/persona/wrong-dir.md" },
+    { "ruleId": "E002", "file": "product/extra/deep/foo.md" }
+  ]
+}

@@ -1,0 +1,4 @@
+{
+  "description": "A clean strict-mode feature: canonical sections in canonical order, each spec item type in its section, every REQ has an AC. Emits nothing.",
+  "diagnostics": []
+}
