@@ -1,10 +1,12 @@
 # LiveSpec: Format Specification
 
-**Version:** `v1.0.0-draft`
+**Version:** `v0.1.0-draft`
 **Status:** Draft (open for comments)
 **Canonical home:** https://livespec.dev
 
 > LiveSpec is a file format for product specifications that stay current with the code they describe. It is designed to be readable by humans, parseable by tools, and consumable by AI coding agents, without lock-in to any specific application.
+
+> ⚠️ **Work in progress.** This is an early draft (`v0.1.0-draft`), not a frozen standard. Every part of it (entity types, body sections, frontmatter fields, linking rules, conformance levels) is subject to change, including in backward-incompatible ways, until a stable `v1.0` is released. Implementers should track changes closely and treat the format as unstable.
 
 ---
 
@@ -146,7 +148,7 @@ mode: strict
 | `description`    | string | No       | Short project description.                               |
 | `mode`           | enum   | No       | `loose` (default) or `strict`. See §12.                  |
 
-Additional fields MAY be added by tools as `x-{tool}-{key}` (e.g. `x-territory-project-id`). Conformant tools MUST preserve unknown `x-*` fields on write.
+Additional fields MAY be added by tools as `x-{tool}-{key}` (e.g. `x-acme-project-id`). Conformant tools MUST preserve unknown `x-*` fields on write.
 
 > **Future:** Mechanisms for shared configuration (presets, manifest inheritance) are under consideration for a future minor version. See §15.
 
