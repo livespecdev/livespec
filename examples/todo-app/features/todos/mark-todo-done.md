@@ -3,6 +3,7 @@ links:
   persona: [solo-organizer, team-coordinator]
   goal: [stay-on-top-of-personal-tasks, coordinate-team-work]
   entity: [todo, reminder]
+  screen: [list-view, todo-detail]
   feature:
     requires: [sign-in]
 ---

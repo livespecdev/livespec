@@ -204,6 +204,7 @@ This is the minimal **core taxonomy** of v1. Tools claiming Level 2+ conformance
 - `ui_component`: A UI component (button, modal, input) with its usage rules.
 - `design_principle`: A guiding belief or rule for UX decisions.
 - `ux_pattern`: A reusable interaction or layout pattern.
+- `screen`: A durable surface of the product's interface (a page, a route, a full-screen editor, a standalone modal flow). Captures the surface's role, how it is reached, what it is made of, and how it connects to other screens, at the editorial level the product warrants, not as a component tree or a pixel spec. Like every concept, its body is free-form (§6.4): a project settles its own sections. A screen is the UX counterpart of a product `entity`: a stable place that many features modify over time. Features link to the screens they act on via `links.screen` (§9.2), and "which features live on this screen" is read back from that link (§9.3), never maintained as a list inside the screen file.
 
 **Under `tech/`:**
 - `coding_standard`: A coding rule or convention.
@@ -327,6 +328,8 @@ Symptoms that point to **concept**:
 - It is referenced by features that *implement* or *respect* it, but isn't itself built.
 - It can be true of the system at any moment, independently of any active delivery.
 
+The same test settles screens. *"Add a settings page"* ships and has acceptance criteria: it is a feature. *"The settings page"* as a place (its route, its access rules, its regions, its states, the screens it leads to) outlives every feature that touched it: it is a `screen` concept in `ux/`. A screen file MUST NOT accumulate acceptance criteria, and features MUST NOT be enumerated inside it: the feature declares `links.screen`, and the reverse view is derived (§9.3).
+
 A common confusion: a feature MAY be *named after* a concept. `features/auth/two-factor.md` ships the capability; `tech/security_pattern/two_factor.md` describes the standing pattern the codebase follows. The two MAY coexist: the feature references the concept via `links`. But a single document MUST NOT try to be both.
 
 #### Feature vs. spec item
@@ -363,6 +366,7 @@ When in doubt, prefer **spec item first, extract later**: a REQ is cheap to add 
 | *"An `Order` has a customer, line items, and a status."*                   | `entity` in `product/`           | Domain object multiple features manipulate; lives independently of any one feature.                       |
 | *"Daily transfer limit is €3,000."*                                        | `constraint` in `product/`       | Standing quantitative rule that multiple features must respect.                                            |
 | *"Payments go through Stripe."*                                            | `external_system` in `tech/`     | A third-party system the product integrates with, referenced by every feature that touches payment.        |
+| *"The board editor is a full-screen canvas at `/boards/[id]/edit`."*       | `screen` in `ux/`                | A durable surface many features modify; the screen file describes the place, the features describe what ships on it. |
 
 **Boundary rule (both directions).** If, while writing a feature, you state a rule that *would clearly apply elsewhere*, stop and write it as a concept first, then link from the feature. Conversely, if a "concept" you're writing has acceptance criteria, a deliverable scope, and would observably advance the product when implemented, you're writing a feature: move it to `features/`.
 
@@ -681,6 +685,7 @@ links:
   persona: [the-product-engineer]
   pain_point: [decisions-get-lost, context-gap-for-ai-coding-tools]
   entity: [user, document]
+  screen: [document-detail]
   external_system: [stripe]
   feature:
     requires: [auth-sign-in]
@@ -923,7 +928,7 @@ Tools claim conformance at one of three levels:
 - MUST preserve unknown frontmatter fields on write (round-trip safety)
 - MUST emit valid markdown that other Level 1 tools can re-read
 - MUST validate against the canonical JSON schemas
-- MUST recognize the core concept taxonomy (§6.2): type slugs (`persona`, `pain_point`, `goal`, `principle`, `constraint`, `entity`, `glossary_term`, `ui_component`, `design_principle`, `ux_pattern`, `coding_standard`, `architecture_decision`, `external_system`), their canonical containing directories, and link resolution
+- MUST recognize the core concept taxonomy (§6.2): type slugs (`persona`, `pain_point`, `goal`, `principle`, `constraint`, `entity`, `glossary_term`, `ui_component`, `design_principle`, `ux_pattern`, `screen`, `coding_standard`, `architecture_decision`, `external_system`), their canonical containing directories, and link resolution
 - MUST preserve both forms of `links.feature` on write, untyped list and typed object (§7.2), without lossy conversion between them
 - MUST recognize `livespec:` code markers (§9.4) when scanning source files and resolve them to spec items, including the multi-ID list form (`#REQ-1,REQ-2`)
 

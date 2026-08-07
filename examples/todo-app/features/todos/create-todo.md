@@ -4,6 +4,7 @@ links:
   pain_point: [forgetting-recurring-tasks]
   goal: [stay-on-top-of-personal-tasks]
   entity: [todo, list, reminder]
+  screen: [list-view]
   constraint: [max-list-size]
   feature:
     requires: [sign-in]
