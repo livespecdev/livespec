@@ -22,6 +22,6 @@ As a user, I want to mark a todo as done with one tap so that closing a task fee
   - [ ] AC-3.1: The next occurrence inherits all attributes (title, recurrence rule, list) of the original.
   - [ ] AC-3.2: The original occurrence is moved to archived state, preserving the history.
 
-## Issues
+## Limitations
 
-- [ ] ISS-1: On shared lists, two collaborators marking the same todo done within seconds occasionally produces two completion events. The data layer is idempotent so the user-visible state is correct, but completion-count metrics are temporarily inflated.
+- [ ] LIM-1: On shared lists, two collaborators marking the same todo done within seconds occasionally produces two completion events. The data layer is idempotent so the user-visible state is correct, but completion-count metrics are temporarily inflated.
