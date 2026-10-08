@@ -105,9 +105,9 @@ Opening paragraph (required). Common idioms:
 ## Issues
 - [ ] ISS-1: ...
 ## UX
-Free-form notes.
+- [ ] UX-1: ...        (plus free-form notes)
 ## Tech
-Free-form notes.
+- [ ] TECH-1: ...      (plus free-form notes)
 ```
 
 In **loose mode** (default), section names and order are flexible. In **strict mode**, only the canonical sections above are allowed, in the listed order.
@@ -121,8 +121,12 @@ In **loose mode** (default), section names and order are flexible. In **strict m
 | `AS`  | top-level in `## Assumptions`| `- [ ] AS-1: body`                        |
 | `Q`   | top-level in `## Questions`  | `- [ ] Q-1: body`                          |
 | `ISS` | top-level in `## Issues`     | `- [ ] ISS-1: body`                        |
+| `UX`  | top-level in `## UX`         | `- [ ] UX-1: body`                         |
+| `TECH`| top-level in `## Tech`       | `- [ ] TECH-1: body`                       |
 
-Checkbox states: `[ ]` open, `[x]` done, `[-]` cancelled. AC nesting is **exactly one level**; deeper is invalid.
+Checkbox states: `[ ]` open, `[x]` done, `[-]` cancelled. AC nesting is **exactly one level**; deeper is invalid. Only REQs have children.
+
+**Requirement or direction?** `REQ` / `AC` say *what* the feature does; `UX` / `TECH` say *how* this feature is built to do it. Test: could another implementation satisfy every REQ and AC while contradicting the statement? Yes: direction. No: AC. A direction that applies beyond the feature is a concept (`ux_pattern`, `coding_standard`, `architecture_decision`), linked from the feature. A changed direction is a new item; the old one goes `[-]` with `→ Superseded by [TECH-3]: ...`.
 
 **IDs are file-scoped and immutable.** Never reuse or renumber.
 
@@ -192,6 +196,7 @@ Marker = literal `livespec:` + space(s) + `{feature-slug}#{spec-item-id}`, optio
 - **No** features for migrations, upgrades, refactors — those are tasks. Document the *target state* as a REQ in an existing feature or a `tech/` concept.
 - **No** `status` field, assignees, due dates, kanban states. Progress lives in checkbox states (`[ ]` → `[x]`) and external trackers.
 - **No** "ephemeral implementation context" in `## Tech` ("I'm here, next step is X"). That belongs in PR descriptions or task trackers.
+- **No** tasks as directions: `TECH-1: Search uses tsvector`, not `TECH-1: Add a tsvector index`.
 
 ### Don't confuse types
 - A document is **either** a feature **or** a concept — never both. `features/auth/two-factor.md` (ships) and `tech/security_pattern/two-factor.md` (standing pattern) may coexist; one file MUST NOT try to be both.
@@ -204,7 +209,7 @@ Marker = literal `livespec:` + space(s) + `{feature-slug}#{spec-item-id}`, optio
 - AC nesting beyond one level is invalid. Multiple REQs are the answer.
 
 ### Don't invent format
-- No block-level constructs inside spec item bodies (headings, fenced code blocks, tables). Move them to `## Tech` / `## UX` and reference by ID.
+- No block-level constructs inside spec item bodies (headings, fenced code blocks, tables). Move them to `## Tech` / `## UX` prose, or split them into `UX` / `TECH` items, and reference by ID.
 - No new top-level folders. Extension types go inside the existing four.
 - In-prose `[[ ]]` references resolve only to whole entities (concept/feature). To reference a spec item, use `[REQ-3]` (same file) or `[feature-slug#REQ-3]` (cross-feature).
 

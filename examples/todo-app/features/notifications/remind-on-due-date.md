@@ -22,3 +22,14 @@ When a [[todo]]'s due time arrives, the system delivers a push notification to i
 ## Assumptions
 
 - [ ] AS-1: Users tolerate "best-effort" delivery — i.e. a missed reminder is regrettable but not a defect when caused by OS-level push suppression or device offline state.
+
+## UX
+
+- [ ] UX-1: The notification title is the todo's title, unprefixed; the body shows the due time in the recipient's locale.
+
+## Tech
+
+- [ ] TECH-1: Reminders are dispatched by a scheduled job that polls due reminders every 15 seconds, rather than by one timer per reminder.
+- [ ] TECH-2: The deep link uses the `todo-detail` route with the todo ID as its only parameter, so that it stays valid if the todo moves between lists.
+
+Polling every 15 seconds keeps fire-time accuracy well inside the 30-second P95 budget of [AC-1.1], and survives process restarts without rescheduling.

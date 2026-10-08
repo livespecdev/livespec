@@ -71,7 +71,7 @@ As a power user, I want to search across all my documents so that I can find con
 
 ## Tech
 
-Use PostgreSQL full-text search for v1.
+- [ ] TECH-1: Search uses PostgreSQL full-text search for v1.
 ```
 
 That's a complete, valid LiveSpec project.
