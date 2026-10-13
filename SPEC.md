@@ -59,7 +59,7 @@ LiveSpec describes **the software**: what it should do, why, who it serves, how 
 
 That second concern belongs to project-management tools, code-review workflows, and the developer's own task system. Conflating the two is exactly what made past spec formats drift into staleness (Notion pages that nobody updates) or noise (Confluence trees of half-finished tickets). LiveSpec stays on the *software* side of that line on purpose; every design decision in this document can be cross-checked against it.
 
-This principle is the rationale behind several explicit exclusions: no `status` enum on features (§10), no implementation notes, no assignees or due dates, no kanban states. Anything that answers *"how is the work going?"* lives outside the spec, typically referenced from the spec via `x-*` extension fields if a tool needs the bridge.
+This principle is the rationale behind several explicit exclusions: no `status` enum on features (§10), no progress notes, no assignees or due dates, no kanban states. Anything that answers *"how is the work going?"* lives outside the spec, typically referenced from the spec via `x-*` extension fields if a tool needs the bridge.
 
 It does **not** try to be:
 
@@ -252,7 +252,7 @@ links:
 | `tags`  | string[]         | No       | Free-form classification labels.     |
 | `links` | object           | No       | Cross-references; see §9.            |
 
-All fields are optional. A concept with neither `tags` nor `links` MUST omit the frontmatter block entirely (per §5), the file begins directly with the H1 title.
+All fields are optional.
 
 **Concepts MAY link to other concepts.** The `links` field is symmetric: it works the same way in concepts as in features (§7.2). A `persona` may link to relevant `pain_point`s, a `goal` may link to the `persona`s it serves, an `entity` may link to other entities it relates to. The resolution rules in §9.2 apply uniformly. Example:
 
@@ -264,7 +264,7 @@ links:
 ---
 ```
 
-Concept↔concept links are unidirectional in storage but SHOULD be presented bidirectionally by tools (§9.3). Only the **typed feature relations** (`requires` / `triggers` / `extends`, §7.2) are restricted to feature↔feature, they do not apply between concepts.
+The **typed feature relations** (`requires` / `triggers` / `extends`, §7.2) apply only between features.
 
 ### 6.4 Body contract
 
@@ -456,7 +456,7 @@ assets:
 | `links`  | object   | No       | Cross-references; see §9.                                |
 | `assets` | object[] | No       | Asset metadata; see §11.                                 |
 
-All fields are optional. A feature with neither `links` nor `assets` MUST omit the frontmatter block entirely (per §5), the file begins directly with the H1 title.
+All fields are optional.
 
 #### Typed feature relations
 
@@ -474,8 +474,6 @@ The three relations defined in v1:
 | `requires` | This feature does not function without the listed feature (hard runtime dependency). |
 | `triggers` | This feature causes the listed feature to run (often asynchronously).                |
 | `extends`  | This feature is a specialization of the listed feature.                              |
-
-Relations are **unidirectional in storage** (declared on the source feature) but tools SHOULD present them bidirectionally (see §9.3).
 
 Relations are restricted to feature↔feature. Relations from a feature to a concept (e.g. *"this feature respects this constraint"*, *"this feature manipulates this entity"*) are carried by the **concept type itself** in the `links` object: `constraint: [...]` already means *"respects"*, `entity: [...]` already means *"manipulates"*, `external_system: [...]` already means *"integrates with"*, and so on. No explicit typing needed.
 
@@ -521,8 +519,6 @@ The user-story format remains the recommended idiom for user-facing features, bu
 - **Subsystem / integration**: `When {trigger}, the system {action} so that {outcome}.` (for durable non-user-facing components: auth subsystem, job scheduler, webhook delivery, payment integration). The opening describes the **standing behavior** of the component, not the act of building it.
 
 These are not a closed taxonomy and v1 does not enforce a specific signature. The intent is to normalize the fact that **several legitimate forms exist**, so authors aren't tempted to contort a subsystem feature into an `As a {role}` template that doesn't fit. A future RFC may promote one or more of these into a structured frontmatter field if a clear need emerges.
-
-> **Migrations, upgrades, and refactors are not features.** Their target state, if durable, belongs in an existing feature (as evolving REQs) or a concept (as a standing tech property). The act of getting there belongs in PR descriptions, ADRs, or runbooks. *"Migrate search from Postgres FTS to Meilisearch"* is task-shaped; *"Search uses Meilisearch with sub-200ms p95"* is a durable REQ in the `search` feature (or a `tech` concept describing the standing engine choice). See §1 and the §7 preamble.
 
 ### 7.5 Feature granularity
 
@@ -577,7 +573,7 @@ Spec items appear as GitHub-flavored checkbox list items:
 | `[x]`  | Done / closed              | REQ/AC: implemented. AS: validated / confirmed. Q: answered. LIM: lifted. UX/TECH: applied in the code. |
 | `[-]`  | Cancelled / won't do       | Explicitly decided not to pursue. Body SHOULD state the reason.             |
 
-The `[-]` state preserves the historical record of a dropped item without removing it (which would lose decision context) or falsely checking it. GitHub renders `[-]` with strikethrough.
+The `[-]` state preserves the historical record of a dropped item without removing it (which would lose decision context) or falsely checking it.
 
 For `UX` and `TECH` items, `[-]` means the direction was abandoned or superseded. A direction that replaces another is a new item with a new ID; the abandoned item stays `[-]` and SHOULD carry a resolution note pointing at its replacement (e.g. `→ Superseded by [TECH-4]: ...`). Rewriting the body of a closed direction to say the opposite of what it said MUST NOT be used to record a change of direction.
 
@@ -817,8 +813,6 @@ A single marker MAY point to several spec items **of the same feature** by listi
 
 This list form exists to avoid repeating the feature slug when one code site serves several items of the same feature. It is exactly equivalent to one single-item marker per ID, with the same verb. The feature slug appears once and scopes every ID in the list; an ID in the list MUST NOT carry its own `feature-slug#` prefix. To reference items across **different** features, a source file uses one marker per feature (a file MAY carry many markers).
 
-A source file MAY carry zero, one, or many markers. A marker pointing to a `REQ` implicitly covers its nested `AC`s unless more specific AC-level markers exist elsewhere; this applies per listed ID.
-
 An `implements` marker on a `UX` or `TECH` item (`// implements: source-flags#TECH-3`) anchors the code that embodies the direction, so that a tool can show where a design or implementation choice lives and notice when that code disappears. A `see-spec` marker on an `AS`, `Q`, or `LIM` lets a tool find the code to revisit when that item closes: an assumption invalidated, a question answered, a limitation lifted.
 
 The payload grammar is the verb immediately followed by `:`, then one or more spaces, then `{feature-slug}#{spec-item-id}`, optionally followed by one or more `,{spec-item-id}` with no internal whitespace anywhere in the payload. Tools MUST match case-sensitively. Tools MUST recognize the list form and resolve every listed ID. Feature slugs are globally unique within `features/` (§9.2), so the area is not part of the marker: markers remain stable when a feature is moved between areas.
@@ -831,7 +825,7 @@ A marker resolves by:
 1. Locating the feature file by searching `features/**/{feature-slug}.md`.
 2. Finding, for each listed ID, the spec item with the matching ID inside that file (per §8.3).
 
-A marker whose feature file is missing is a **broken link**. In the list form, each listed ID resolves independently: an ID that does not exist in the feature file is a broken link for that ID alone, leaving the other IDs in the same marker valid. Tools SHOULD report broken links as a lint warning at Level 3+.
+A marker whose feature file is missing is a **broken link**. In the list form, each listed ID resolves independently: an ID that does not exist in the feature file is a broken link for that ID alone, leaving the other IDs in the same marker valid.
 
 #### Scope of this section: what v1 does and does not define
 
@@ -986,7 +980,7 @@ In strict mode, the following rules are upgraded:
 
 ### 12.3 Compatibility
 
-Loose and strict are not separate dialects. A strict-mode project is always readable by a loose-mode reader (and vice-versa for read-only operations). The mode only affects **what tools enforce on write**.
+Loose and strict are not separate dialects. A strict-mode project is always readable by a loose-mode reader (and vice-versa for read-only operations). The mode only affects **what tools enforce**, never how files are read.
 
 A project MAY change mode over its lifetime (e.g. starting in loose, migrating to strict as the team matures). Tools migrating a project to strict mode SHOULD report all violations as a single batch rather than refusing the migration.
 
@@ -1011,7 +1005,6 @@ Tools claim conformance at one of three levels:
 ### Level 1: Reader
 - MUST recognize both manifest names, `livespec.yaml` and `product-spec.yaml` (§4)
 - MUST parse all required frontmatter fields without error
-- MUST preserve unknown fields on read
 - MAY ignore unknown spec item types
 
 ### Level 2: Writer
@@ -1019,13 +1012,17 @@ Tools claim conformance at one of three levels:
 - MUST preserve unknown frontmatter fields on write (round-trip safety)
 - MUST emit valid markdown that other Level 1 tools can re-read
 - MUST NOT emit a manifest or frontmatter that violates the contracts of §4, §6.3, §7.2, and §11.2. Canonical JSON schemas for these contracts will be published alongside this spec; until then, the narrative contracts are the reference
-- MUST recognize the core concept taxonomy (§6.2): type slugs (`persona`, `pain_point`, `goal`, `principle`, `constraint`, `entity`, `glossary_term`, `ui_component`, `design_principle`, `ux_pattern`, `screen`, `coding_standard`, `architecture_decision`, `external_system`), their canonical containing directories, and link resolution
+- MUST recognize the core concept taxonomy (§6.2), its containing directories, and link resolution (§9.2)
 - MUST preserve both forms of `links.feature` on write, untyped list and typed object (§7.2), without lossy conversion between them
 - MUST recognize code markers (§9.4) when scanning source files and resolve them to spec items: both verbs (`implements:`, `see-spec:`) on any spec item type, the legacy `livespec:` verb, and the multi-ID list form (`#REQ-1,REQ-2`)
 - MUST NOT emit the legacy `livespec:` verb when writing markers
 
 ### Level 3: Linter
+
+A *lint error* makes a project non-conformant; a *lint warning* does not. Both are diagnostics.
+
 - All Level 2 requirements
+- MUST emit a diagnostic for every rule this spec qualifies as a lint error or lint warning
 - MUST emit diagnostics for: broken links, invalid slugs, duplicate IDs, missing required fields, unknown spec item types, malformed checkboxes
 - MUST emit a diagnostic for a project root holding both `livespec.yaml` and `product-spec.yaml` (§4)
 - MUST emit diagnostics for broken code markers (feature file missing, or a listed spec item ID does not exist), and for malformed list payloads (whitespace inside the payload, or a listed ID carrying its own `feature-slug#` prefix)
@@ -1041,14 +1038,14 @@ A conformance test suite is published alongside this spec (TBD; see §15 #001).
 
 ## 15. Open Questions (RFC Candidates)
 
-These are known limitations or undecided design points. Each will be addressed in a numbered RFC before v2.
+These are known limitations or undecided design points. Each will be addressed in a numbered RFC.
 
 | #   | Topic                                                                                          |
 |-----|------------------------------------------------------------------------------------------------|
 | 001 | Conformance test suite: fixtures and validation tooling                                       |
 | 002 | Concept extension mechanism: how third parties register new types                             |
 | 003 | Spec-item ID strategy: opaque IDs vs positional vs current human IDs                          |
-| 004 | Bidirectional AC ↔ REQ linking: formal frontmatter or inline?                                 |
+| 004 | ~~Bidirectional AC ↔ REQ linking~~ Resolved: AC linkage is structural (§8.2)                 |
 | 005 | ~~UX_DIRECTION and TECH_DIRECTION as first-class block spec items~~ Resolved: inline `UX` and `TECH` spec items (§8.2), with the editorial test in §6.5 |
 | 006 | External assets: Figma, Loom, Miro URL support                                                |
 | 007 | i18n: multilingual specs, translatable section names                                          |
