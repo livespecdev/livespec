@@ -145,7 +145,7 @@ mode: strict
 
 | Field            | Type   | Required | Description                                              |
 |------------------|--------|----------|----------------------------------------------------------|
-| `format_version` | string | Yes      | Version of this format the project conforms to (semver). |
+| `format_version` | string | Yes      | Format version the project targets, as `MAJOR.MINOR` (§13). |
 | `name`           | string | Yes      | Human-readable project name.                             |
 | `description`    | string | No       | Short project description.                               |
 | `mode`           | enum   | No       | `loose` (default) or `strict`. See §12.                  |
@@ -217,7 +217,7 @@ This is the minimal **core taxonomy** of v1. Tools claiming Level 2+ conformance
 
 #### Naming convention for type slugs
 
-Two rules govern type slug naming:
+Type slugs MUST match the regex `^[a-z][a-z0-9]*(_[a-z0-9]+)*$` (snake_case ASCII), and two further rules govern their naming:
 
 1. **Globally unique.** A type slug MUST be unique across the entire taxonomy. The resolver determines a concept's location from its type slug alone: no two types may share a slug, even across different top-level directories.
 2. **Self-disambiguating.** A type slug SHOULD make sense on its own, without relying on its containing directory for meaning. Types whose bare name could plausibly belong to a different domain MUST be prefixed (e.g. `ui_component`, not `component`, because "component" is ambiguous with software components; `ux_pattern`, not `pattern`, because patterns exist in tech too).
@@ -235,7 +235,7 @@ To prevent fragmentation when teams introduce extension types for common technic
 
 These are **not core types**: tools are not required to support them. But teams adding any of these SHOULD use the slug listed here so that LiveSpec projects and tools can interoperate consistently across organizations.
 
-> **Extensions:** Tools MAY define additional types as subdirectories of `product/`, `ux/`, or `tech/`. Custom type slugs MUST follow both naming rules above. Unknown types MUST NOT cause parse failure in Level 1+ readers. A future RFC will formalize the extension registration mechanism (including the recommended namespaces above). See §15.
+> **Extensions:** Tools MAY define additional types as subdirectories of `product/`, `ux/`, or `tech/`. Custom type slugs MUST follow both naming rules above. Unknown types MUST NOT cause parse failure in Level 1+ readers. Resolvers locate an extension type by its directory alone (§9.2), so no registration is needed to resolve links to it. A future RFC will formalize the extension registration mechanism (including the recommended namespaces above). See §15.
 
 ### 6.3 Frontmatter contract
 
@@ -316,7 +316,7 @@ If symptoms conflict, prefer **promote + link**: extract the rule as a concept, 
 
 #### Concept vs. feature
 
-A capability like *"two-factor authentication"* could plausibly live as `tech/security_pattern/two_factor.md` (concept) or as `features/auth/two-factor.md` (feature). **A feature ships; a concept informs.** The litmus test: can you write acceptance criteria a PR can satisfy? If yes, it's a feature.
+A capability like *"two-factor authentication"* could plausibly live as `tech/security_convention/two-factor.md` (concept) or as `features/auth/two-factor.md` (feature). **A feature ships; a concept informs.** The litmus test: can you write acceptance criteria a PR can satisfy? If yes, it's a feature.
 
 Symptoms that point to **feature**:
 
@@ -334,7 +334,7 @@ Symptoms that point to **concept**:
 
 The same test settles screens. *"Add a settings page"* ships and has acceptance criteria: it is a feature. *"The settings page"* as a place (its route, its access rules, its regions, its states, the screens it leads to) outlives every feature that touched it: it is a `screen` concept in `ux/`. A screen file MUST NOT accumulate acceptance criteria, and features MUST NOT be enumerated inside it: the feature declares `links.screen`, and the reverse view is derived (§9.3).
 
-A common confusion: a feature MAY be *named after* a concept. `features/auth/two-factor.md` ships the capability; `tech/security_pattern/two_factor.md` describes the standing pattern the codebase follows. The two MAY coexist: the feature references the concept via `links`. But a single document MUST NOT try to be both.
+A common confusion: a feature MAY be *named after* a concept. `features/auth/two-factor.md` ships the capability; `tech/security_convention/two-factor.md` describes the standing convention the codebase follows. The two MAY coexist: the feature references the concept via `links`. But a single document MUST NOT try to be both.
 
 #### Feature vs. spec item
 
@@ -391,7 +391,7 @@ A `LIM` records a gap between what the feature should do and what it does, accep
 | *"All logs include a `trace_id`."*                                         | `logging_convention` (concept)   | Cross-cutting, no single feature owns it.                                                 |
 | *"Telemetry events are opt-in."*                                           | `principle` in `product/`        | Standing product belief that shapes every feature emitting telemetry.                     |
 | *"Two-factor authentication."*                                             | feature under `features/auth/`   | Ships, has AC, observable user-facing capability.                                         |
-| *"The system uses TOTP, FIDO2, and recovery codes as second factors."*     | `security_pattern` (concept)     | Describes the standing approach the codebase respects; many features reference it.        |
+| *"The system uses TOTP, FIDO2, and recovery codes as second factors."*     | `security_convention` (concept)  | Describes the standing approach the codebase respects; many features reference it.        |
 | *"The `/checkout` endpoint accepts an `idempotency_key` header."*          | `REQ` in the checkout feature    | Specific to this endpoint and feature; not a general convention.                          |
 | *"On checkout error, retry up to 3 times with exponential backoff."*       | `REQ` in the checkout feature    | Feature-specific behavior, unless retry policy is uniform, then promote to a convention. |
 | *"Export user data as CSV."*                                               | feature *or* `REQ`               | Standalone feature if delivered with its own narrative; `REQ` if one capability of a broader `data-export`. |
@@ -422,6 +422,8 @@ A feature lives either directly under `features/{slug}.md` (no area) or under `f
 A feature's area is derived from its file path: the path segments between `features/` and the file, joined by `/`, or empty if the file sits directly under `features/`.
 
 Areas MAY nest one level (e.g. `features/billing/invoicing/generate-pdf.md`). Deeper nesting is reserved for a future RFC.
+
+**Reserved name.** `assets` is reserved for feature asset folders (§11.1) and MUST NOT be used as an area name. A **feature file** is any `.md` file under `features/`, at most two area levels deep, that is not inside an `assets/` directory. Wherever this spec writes `features/**/{slug}.md`, it means the feature file with that slug.
 
 **Slug-area collision.** A feature slug MUST NOT collide with the name of a sibling area. For example, `features/billing.md` and `features/billing/invoice.md` MUST NOT coexist: to a human reader, `billing` is ambiguously both a feature and an area. This rule is mechanical (a linter can check it without judgment) and the fix is trivial (rename one or the other). Tools MUST report this as a lint error.
 
@@ -705,7 +707,7 @@ The pills stay informative rather than alarming: the score is unaffected, so not
 
 ### 8.3 Identifiers
 
-**REQ / AS / Q / LIM / UX / TECH IDs** use the form `{TYPE}-{N}` where `N` is a positive integer, scoped to its parent H2 section. Example: `REQ-1`, `REQ-2`, `AS-1`, `Q-1`, `LIM-1`, `UX-1`, `TECH-1`.
+**REQ / AS / Q / LIM / UX / TECH IDs** use the form `{TYPE}-{N}` where `N` is a positive integer, unique per type within the feature file. Example: `REQ-1`, `REQ-2`, `AS-1`, `Q-1`, `LIM-1`, `UX-1`, `TECH-1`.
 
 **AC IDs** use the form `AC-{parent_req_index}.{ac_index}` reflecting structural nesting:
 
@@ -745,6 +747,8 @@ All entities are identified by a **slug**: the filename without the `.md` extens
 - Slugs MUST be unique within their type's directory.
 - Slugs SHOULD be stable; renaming a file is a breaking change for inbound links.
 
+Entity slugs are kebab-case; type slugs are snake_case (§6.2). The two casings are deliberately distinct: a type slug is a word of the format's vocabulary, used as a directory name and as a key under `links`, while an entity slug names one instance. In `product/pain_point/slow-onboarding.md` or `[[pain_point:slow-onboarding]]`, the casing alone tells the type from the instance.
+
 ### 9.2 Link resolution
 
 Links appear in frontmatter under the `links` field, keyed by **target type slug** (always singular):
@@ -763,7 +767,7 @@ links:
 
 Resolution algorithm:
 1. The key (e.g. `persona`) is the type slug.
-2. For concept types, the file is resolved to `{product|ux|tech}/{key}/{slug}.md`: the resolver determines the containing top-level directory by looking up the type in the core taxonomy (§6.2) or in registered extensions.
+2. For concept types, the file is resolved to `{product|ux|tech}/{key}/{slug}.md`. For a core type, the containing top-level directory is the one given by the core taxonomy (§6.2). For any other type, the resolver looks for a `{key}/` subdirectory under `product/`, `ux/`, and `tech/`: since type slugs are globally unique (§6.2), at most one exists, and the link resolves inside it. If none exists, the link is broken (step 4); if more than one exists, the project violates type-slug uniqueness and the link is ambiguous.
 3. For the special key `feature`, the value MAY be either a list of slugs or an object whose keys are typed relation names (§7.2). In both cases each slug resolves to `features/**/{slug}.md` (searched across feature areas; slugs are globally unique within `features/`). The relation name is preserved for tools but does not change resolution.
 4. A link to a non-existent file is a **lint warning**, not a parse error (see §14).
 
@@ -858,7 +862,7 @@ For features, the type prefix is `feature`. For concepts, the type is the concep
 
 #### Resolution
 
-1. For `[[type:slug]]`: look up `type` against the taxonomy (§6.2 + extensions) to find the containing directory, then resolve to `{dir}/{type}/{slug}.md`. For `type = feature`, resolve to `features/**/{slug}.md`.
+1. For `[[type:slug]]`: find the directory containing `type` as in §9.2 (core taxonomy, else the unique `{type}/` subdirectory under `product/`, `ux/`, or `tech/`), then resolve to `{dir}/{type}/{slug}.md`. For `type = feature`, resolve to `features/**/{slug}.md`.
 2. For `[[slug]]`: search across all features and all concept types in the project.
    - **Exactly one match** → resolved.
    - **Zero matches** → broken reference; lint warning at Level 3 (§14).
@@ -925,6 +929,8 @@ features/
 
 Asset files MAY be any media format.
 
+An asset `path` is relative to the directory containing the feature file, so it starts with `assets/{feature-slug}/`. Moving a feature together with its `assets/{feature-slug}/` folder to another area therefore keeps every path valid.
+
 ### 11.2 Frontmatter declaration
 
 Each asset MUST be declared in the feature's frontmatter:
@@ -944,7 +950,7 @@ assets:
 | `type`        | enum   | Yes      | `wireframe`, `mockup`, `diagram`, `screenshot`, `reference` |
 | `title`       | string | Yes      | Human-readable title.                              |
 | `description` | string | No       | Short description for accessibility and search.    |
-| `path`        | string | Yes      | Project-root-relative path to the asset file.      |
+| `path`        | string | Yes      | Path to the asset file, relative to the directory containing the feature file. |
 
 > **Future:** External asset URLs (Figma, Loom, Miro) are not in v1. See §15.
 
@@ -960,7 +966,6 @@ The default mode, optimized for individual contributors, small teams, and projec
 
 - H2 section names MAY be anything; canonical names (Requirements, Assumptions, Questions, Limitations, UX, Tech) are RECOMMENDED but not enforced.
 - Spec items are identified by their inline syntax wherever they appear. A `LIM` item inside `## Requirements` is permitted (lint warning at most).
-- User story format (§7.4) is SHOULD.
 - Section ordering is unconstrained.
 - Tools MUST preserve unrecognized H2 sections and their content on write (losslessness).
 
@@ -995,7 +1000,7 @@ LiveSpec follows semantic versioning at the format level:
 - **Minor** (`1.1.0`): additive: new optional fields, new entity types, new spec item types.
 - **Patch** (`1.0.1`): clarifications, typo fixes, no semantic change.
 
-The `format_version` field in the manifest declares the version a project targets. Tools MUST refuse to write files in a version they don't support and SHOULD warn (not refuse) when reading a newer minor version.
+The `format_version` field in the manifest declares the version a project targets, as `MAJOR.MINOR` (e.g. `"1.0"`). Patch versions carry no semantic change and are not declared. Until `v1.0` is released, `"1.0"` designates the current draft. Tools MUST refuse to write files in a version they don't support and SHOULD warn (not refuse) when reading a newer minor version.
 
 ---
 
@@ -1013,7 +1018,7 @@ Tools claim conformance at one of three levels:
 - All Level 1 requirements
 - MUST preserve unknown frontmatter fields on write (round-trip safety)
 - MUST emit valid markdown that other Level 1 tools can re-read
-- MUST validate against the canonical JSON schemas
+- MUST NOT emit a manifest or frontmatter that violates the contracts of §4, §6.3, §7.2, and §11.2. Canonical JSON schemas for these contracts will be published alongside this spec; until then, the narrative contracts are the reference
 - MUST recognize the core concept taxonomy (§6.2): type slugs (`persona`, `pain_point`, `goal`, `principle`, `constraint`, `entity`, `glossary_term`, `ui_component`, `design_principle`, `ux_pattern`, `screen`, `coding_standard`, `architecture_decision`, `external_system`), their canonical containing directories, and link resolution
 - MUST preserve both forms of `links.feature` on write, untyped list and typed object (§7.2), without lossy conversion between them
 - MUST recognize code markers (§9.4) when scanning source files and resolve them to spec items: both verbs (`implements:`, `see-spec:`) on any spec item type, the legacy `livespec:` verb, and the multi-ID list form (`#REQ-1,REQ-2`)
