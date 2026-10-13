@@ -193,7 +193,7 @@ Example: a concept of type `persona` with slug `the-product-engineer` lives at `
 
 ### 6.2 Core taxonomy
 
-This is the minimal **core taxonomy** of v1. Tools claiming Level 2+ conformance MUST support these types.
+This is the minimal **core taxonomy** of v1.
 
 **Under `product/`:**
 - `persona`: A user archetype.
@@ -500,10 +500,7 @@ The body MAY contain free-form markdown content: prose, H2/H3 headings, lists, c
 
 > **Ephemeral implementation context** (decisions in progress, handoff state, "I'm here, next step is X") belongs in git commits, PR descriptions, or external task trackers, not in the spec. This follows from the core principle (§1): LiveSpec describes the software, not the work on it. Durable decisions specific to the feature go to `UX` or `TECH` items (§8.2); decisions that span features go to a concept such as `architecture_decision` (§6.5).
 
-**Behavior by mode** (see §12):
-
-- **Loose mode (default):** Writers SHOULD use canonical section names where applicable, but MAY use any H2 name. Spec items are identified by their inline syntax wherever they appear. Tools MUST preserve unrecognized sections on write (losslessness).
-- **Strict mode:** H2 section names MUST be drawn from the canonical set above. Each spec item type MUST appear only in its intended section (e.g. a `LIM` item inside `## Requirements`, or a `TECH` item inside `## UX`, is a lint error). Section ordering MUST follow the canonical order: Requirements → Assumptions → Questions → Limitations → UX → Tech.
+Section names, item placement, and section order are enforced according to the project mode (§12). The canonical order is the order of the table above.
 
 **Empty sections:** H2 sections with no content SHOULD be omitted rather than left empty. A missing section is the canonical way to say "nothing here."
 
@@ -606,7 +603,7 @@ When a spec item is closed (`[x]` or `[-]`), authors MAY record **why** or **how
 Rules:
 
 - A resolution note is a single continuation line starting with the literal prefix `→ ` (U+2192 followed by one space), at the item's body indentation level. It MAY wrap onto subsequent indented lines using standard list-item continuation.
-- An item MAY have **at most one** resolution note. Multiple `→ ` lines on the same item are a lint error.
+- An item MAY have **at most one** resolution note. Multiple `→ ` lines on the same item are a lint warning.
 - A resolution note is meaningful only on closed items (`[x]` or `[-]`). On an open item (`[ ]`) it is a lint warning: the note is preserved as-is by the parser, but tools SHOULD flag it.
 - The note MAY appear anywhere in the body (before or after other continuation lines), but writers SHOULD place it last for readability.
 - The `→ ` prefix is part of the syntax, not the note content: tools extracting the note MUST strip it.
@@ -671,7 +668,7 @@ Tools MAY render these as navigable links and use them to build a reverse-refere
 
 **AC linkage.** An AC's parent REQ is determined **structurally** by markdown list nesting: no explicit reference is needed. An AC that is not nested under a REQ is a lint error.
 
-**REQ done semantics.** A REQ marked `[x]` while one or more of its ACs are still `[ ]` is permitted but SHOULD trigger a lint warning. Teams may legitimately consider a REQ "done enough" when non-critical ACs remain open, but the discrepancy is worth surfacing. ACs in the `[-]` (cancelled) state do not contribute to this warning.
+**REQ done semantics.** A REQ marked `[x]` while one or more of its ACs are still `[ ]` is permitted but is a lint warning. Teams may legitimately consider a REQ "done enough" when non-critical ACs remain open, but the discrepancy is worth surfacing. ACs in the `[-]` (cancelled) state do not contribute to this warning.
 
 **Limitations.** A `LIM` item describes the software as it is today (§1): a defect the team lives with, a case the feature does not cover, a degraded mode. It states the gap and its observable effect in the present tense, so that a reader (or an agent) does not build on a behavior the software does not have. `[x]` means the limitation was lifted; `[-]` means it is no longer regarded as a limitation, for example because the behavior became intended and is now a `REQ` or a `constraint`. The resolution note says which.
 
@@ -705,7 +702,7 @@ The pills stay informative rather than alarming: the score is unaffected, so not
 
 **REQ / AS / Q / LIM / UX / TECH IDs** use the form `{TYPE}-{N}` where `N` is a positive integer, unique per type within the feature file. Example: `REQ-1`, `REQ-2`, `AS-1`, `Q-1`, `LIM-1`, `UX-1`, `TECH-1`.
 
-**AC IDs** use the form `AC-{parent_req_index}.{ac_index}` reflecting structural nesting:
+**AC IDs** use the form `AC-{R}.{N}`, where `R` MUST equal the `N` of the parent REQ:
 
 ```markdown
 - [x] REQ-1: ...
@@ -740,7 +737,7 @@ Gaps in numbering are conformant. A file containing `REQ-1, REQ-3, REQ-7` is val
 All entities are identified by a **slug**: the filename without the `.md` extension.
 
 - Slugs MUST match the regex `^[a-z0-9]+(-[a-z0-9]+)*$` (kebab-case ASCII).
-- Slugs MUST be unique within their type's directory.
+- Slugs MUST be unique within their type's directory (for features, across all of `features/`).
 - Slugs SHOULD be stable; renaming a file is a breaking change for inbound links.
 
 Entity slugs are kebab-case; type slugs are snake_case (§6.2). The two casings are deliberately distinct: a type slug is a word of the format's vocabulary, used as a directory name and as a key under `links`, while an entity slug names one instance. In `product/pain_point/slow-onboarding.md` or `[[pain_point:slow-onboarding]]`, the casing alone tells the type from the instance.
@@ -959,7 +956,7 @@ LiveSpec defines two modes of operation, declared by the `mode` field in the man
 The default mode, optimized for individual contributors, small teams, and projects in active discovery. Designed to feel frictionless to newcomers.
 
 - H2 section names MAY be anything; canonical names (Requirements, Assumptions, Questions, Limitations, UX, Tech) are RECOMMENDED but not enforced.
-- Spec items are identified by their inline syntax wherever they appear. A `LIM` item inside `## Requirements` is permitted (lint warning at most).
+- Spec items are identified by their inline syntax wherever they appear. A `LIM` item inside `## Requirements` is permitted (lint warning).
 - Section ordering is unconstrained.
 - Tools MUST preserve unrecognized H2 sections and their content on write (losslessness).
 
@@ -1025,12 +1022,10 @@ A *lint error* makes a project non-conformant; a *lint warning* does not. Both a
 - MUST emit a diagnostic for every rule this spec qualifies as a lint error or lint warning
 - MUST emit diagnostics for: broken links, invalid slugs, duplicate IDs, missing required fields, unknown spec item types, malformed checkboxes
 - MUST emit a diagnostic for a project root holding both `livespec.yaml` and `product-spec.yaml` (§4)
-- MUST emit diagnostics for broken code markers (feature file missing, or a listed spec item ID does not exist), and for malformed list payloads (whitespace inside the payload, or a listed ID carrying its own `feature-slug#` prefix)
+- MUST emit lint warnings for broken code markers (feature file missing, or a listed spec item ID does not exist), and for malformed list payloads (whitespace inside the payload, or a listed ID carrying its own `feature-slug#` prefix)
 - SHOULD emit diagnostics for markers using the legacy `livespec:` verb (§9.4)
-- SHOULD emit diagnostics for resolution-note misuses (§8.1): multiple `→ ` lines on one item, or a `→ ` line on an open (`[ ]`) item
 - MUST emit diagnostics for child items nested under an `AS`, `Q`, `LIM`, `UX`, or `TECH` item (§8.1)
 - SHOULD emit diagnostics for unknown relation names under `links.feature` (anything other than `requires`, `triggers`, `extends` in v1)
-- SHOULD emit diagnostics for broken or ambiguous in-prose `[[ ]]` references (§9.5): unresolved slug, or shorthand slug matching two or more entities
 
 A conformance test suite is published alongside this spec (TBD; see §15 #001).
 
