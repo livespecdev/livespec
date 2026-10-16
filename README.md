@@ -2,7 +2,7 @@
 
 > A file format for product specifications that stay current with the code they describe.
 
-> ⚠️ **Work in progress.** LiveSpec is an early draft (`v0.1.0-draft`). The format is not stable: types, sections, frontmatter fields, and rules can all change before a stable `v1.0`. Do not rely on it for production tooling yet. Feedback and simplification proposals are welcome.
+> ⚠️ **Work in progress.** LiveSpec is an early draft (`v1.0.0-draft`). The format is not stable: types, sections, frontmatter fields, and rules can all change before a stable `v1.0`. Do not rely on it for production tooling yet. Feedback and simplification proposals are welcome.
 
 LiveSpec is an open specification format for capturing what a software product is, why it exists, and how it should behave — in a way that humans, AI agents, and tools can all read and write the same files.
 
@@ -87,7 +87,7 @@ That's a complete, valid LiveSpec project.
 
 ## Status
 
-**Draft `v0.1.0-draft`** — early work in progress, open for review. Expect breaking changes before `v1.0`.
+**Draft `v1.0.0-draft`** — early work in progress, open for review. Expect breaking changes before `v1.0`.
 
 The full specification is in [`SPEC.md`](./SPEC.md). JSON Schemas, conformance test suite, and reference tooling are under active development.
 
