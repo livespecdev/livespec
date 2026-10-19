@@ -14,8 +14,8 @@ A reminder is identified by an opaque ID. It is scoped to one todo and one user.
 
 ## Notable attributes
 
-- **Todo** — the [[todo]] this reminder is for.
-- **Recipient** — the [[user]] who will be notified. On a shared list with an assignee, the assignee; otherwise, the todo's owner.
+- **Todo** — the [todo](todo.md) this reminder is for.
+- **Recipient** — the [user](user.md) who will be notified. On a shared list with an assignee, the assignee; otherwise, the todo's owner.
 - **Fire-at** — the absolute timestamp at which the reminder should fire.
 - **Channel** — push, email, or both, derived from the recipient's notification preferences.
 - **State** — pending, fired, or cancelled.

@@ -11,7 +11,7 @@ links:
 
 # Share List with User
 
-As a team coordinator, I want to invite collaborators to a [[list]] by email so that we can work from a shared source of truth without duplicating tasks elsewhere. Sharing remains opt-in on both sides, in line with [[todos-are-private-by-default]].
+As a team coordinator, I want to invite collaborators to a [list](../../product/entity/list.md) by email so that we can work from a shared source of truth without duplicating tasks elsewhere. Sharing remains opt-in on both sides, in line with [Todos Are Private by Default](../../product/principle/todos-are-private-by-default.md).
 
 ## Requirements
 

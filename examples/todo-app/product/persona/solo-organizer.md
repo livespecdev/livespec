@@ -11,7 +11,7 @@ Person who uses the app to manage their own personal todos — errands, recurrin
 
 ## Context
 
-The solo organizer has tried paper notebooks, sticky notes, and the default OS reminders app, but lacks a single durable place for "everything I need to remember". Their dominant frustration is the one captured by [[forgetting-recurring-tasks]]. Lives mostly on mobile, occasionally on desktop. Values quick capture above all else.
+The solo organizer has tried paper notebooks, sticky notes, and the default OS reminders app, but lacks a single durable place for "everything I need to remember". Their dominant frustration is the one captured by [Forgetting Recurring Tasks](../pain_point/forgetting-recurring-tasks.md). Lives mostly on mobile, occasionally on desktop. Values quick capture above all else.
 
 ## What success looks like
 

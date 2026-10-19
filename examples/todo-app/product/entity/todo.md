@@ -17,8 +17,8 @@ A todo is identified by an opaque ID. Its title alone is not unique — two todo
 - **Title** — short human description; required.
 - **Due date** — optional. When set, the todo participates in reminders.
 - **Recurrence rule** — optional. When set, completing the todo schedules its next occurrence.
-- **List membership** — every todo belongs to exactly one [[list]].
-- **Owner** — the [[user]] who created the todo. Distinct from "assignee" on shared lists.
+- **List membership** — every todo belongs to exactly one [list](list.md).
+- **Owner** — the [user](user.md) who created the todo. Distinct from "assignee" on shared lists.
 - **Completion state** — open, done, or archived.
 
 ## Invariants

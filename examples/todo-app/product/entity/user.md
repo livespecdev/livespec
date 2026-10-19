@@ -15,7 +15,7 @@ A user is identified by an opaque ID. Their email address is unique at any given
 
 - **Email** — used for authentication and for sharing invitations.
 - **Display name** — shown to collaborators on shared lists.
-- **Default list** — the "Inbox" [[list]] assigned at signup, used as the destination for quick-capture todos.
+- **Default list** — the "Inbox" [list](list.md) assigned at signup, used as the destination for quick-capture todos.
 - **Notification preferences** — opt-in flags per channel.
 
 ## Invariants

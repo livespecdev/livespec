@@ -11,22 +11,22 @@ The full view of a single todo (`/lists/[listId]/todos/[todoId]`), where the fie
 
 ## Route and access
 
-- Route: `/lists/[listId]/todos/[todoId]`. Opened as a panel beside [[screen:list-view]] on wide viewports, as a full page below 768px.
+- Route: `/lists/[listId]/todos/[todoId]`. Opened as a panel beside the [List View](list-view.md) on wide viewports, as a full page below 768px.
 - Access: same rule as the containing list.
 
 ## Regions
 
 1. **Title and completion state**.
-2. **Scheduling** — due date, recurrence rule, resulting [[entity:reminder]] preview.
+2. **Scheduling** — due date, recurrence rule, resulting [reminder](../../product/entity/reminder.md) preview.
 3. **Notes** — free-text body.
 4. **Activity** — who created the todo and who completed it, for shared lists.
 
 ## States
 
 - **Deleted while open** — the panel is replaced by a dismissable notice; the underlying list stays usable.
-- **Conflicting edit** — a collaborator's change lands during editing: the incoming value is shown alongside the local one rather than overwriting it (see [[architecture_decision:eventual-consistency-for-shares]]).
+- **Conflicting edit** — a collaborator's change lands during editing: the incoming value is shown alongside the local one rather than overwriting it (see [Eventual Consistency for Shared Lists](../../tech/architecture_decision/eventual-consistency-for-shares.md)).
 
 ## Navigation
 
-- Inbound: a row on [[screen:list-view]], a reminder notification.
-- Outbound: closing returns to [[screen:list-view]].
+- Inbound: a row on the [List View](list-view.md), a reminder notification.
+- Outbound: closing returns to the [List View](list-view.md).

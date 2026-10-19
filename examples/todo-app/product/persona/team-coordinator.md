@@ -11,7 +11,7 @@ Person who organizes shared work across a small group — a household, a project
 
 ## Context
 
-The team coordinator is the de-facto "operations person" in their group. The pain they live with daily is described by [[coordinating-on-shared-work]]: chat threads, spreadsheets, and notes apps that weren't designed for collaboration — leading to duplicate work, forgotten tasks, and unclear ownership.
+The team coordinator is the de-facto "operations person" in their group. The pain they live with daily is described by [Coordinating on Shared Work](../pain_point/coordinating-on-shared-work.md): chat threads, spreadsheets, and notes apps that weren't designed for collaboration — leading to duplicate work, forgotten tasks, and unclear ownership.
 
 ## What success looks like
 

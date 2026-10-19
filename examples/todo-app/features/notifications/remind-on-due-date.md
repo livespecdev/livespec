@@ -6,7 +6,7 @@ links:
 
 # Remind on Due Date
 
-When a [[todo]]'s due time arrives, the system delivers a push notification to its recipient (modeled as a [[reminder]]) so that the user is prompted to act without having to open the app. Delivery goes through [[push-notification-provider]].
+When a [todo](../../product/entity/todo.md)'s due time arrives, the system delivers a push notification to its recipient (modeled as a [reminder](../../product/entity/reminder.md)) so that the user is prompted to act without having to open the app. Delivery goes through the [push notification provider](../../tech/external_system/push-notification-provider.md).
 
 ## Requirements
 
